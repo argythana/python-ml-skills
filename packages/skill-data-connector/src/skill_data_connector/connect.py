@@ -5,8 +5,8 @@ Connects to a data source and produces a markdown report with schema
 and summary information.
 
 Usage:
-    uv run python skills/data-connector/scripts/connect.py --source <path>
-    uv run python skills/data-connector/scripts/connect.py --source <path> --output report.md
+    data-connect --source <path>
+    data-connect --source <path> --output report.md
 """
 
 from __future__ import annotations
@@ -15,11 +15,7 @@ import argparse
 import sys
 from pathlib import Path
 
-# Add shared utilities to path
-sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent))
-
-from shared.connection import get_connection, get_table_info, infer_source_type
-from shared.report import MarkdownReport
+from ml_skills_core import MarkdownReport, get_connection, get_table_info, infer_source_type
 
 
 def format_file_size(size_bytes: int | None) -> str:

@@ -1,0 +1,12 @@
+[project]
+name = "ml-skills-core"
+version = "0.1.0"
+description = "Core utilities for ML skills - DuckDB connection and report generation"
+requires-python = ">=3.12"
+dependencies = [
+    "duckdb>=1.0.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

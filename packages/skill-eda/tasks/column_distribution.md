@@ -6,7 +6,7 @@ Analyze the value distribution of a specific column in a dataset.
 
 | Item | Details |
 |------|---------|
-| **Script** | `skills/eda/scripts/column_dist.py` |
+| **Command** | `eda-column-dist` |
 | **Input** | Data source path, column name |
 | **Output** | Markdown report with distribution statistics |
 
@@ -14,13 +14,13 @@ Analyze the value distribution of a specific column in a dataset.
 
 ```bash
 # Basic usage (stdout)
-uv run python skills/eda/scripts/column_dist.py --source <path> --column <column_name>
+eda-column-dist --source <path> --column <column_name>
 
 # Save to file
-uv run python skills/eda/scripts/column_dist.py --source <path> --column <column_name> --output report.md
+eda-column-dist --source <path> --column <column_name> --output report.md
 
 # Limit output rows (for high-cardinality columns)
-uv run python skills/eda/scripts/column_dist.py --source <path> --column <column_name> --limit 20
+eda-column-dist --source <path> --column <column_name> --limit 20
 ```
 
 ## Arguments
@@ -93,11 +93,13 @@ uv run python skills/eda/scripts/column_dist.py --source <path> --column <column
 ## Common Patterns
 
 ### Healthy Distribution
+
 - Expected values present
 - Reasonable class balance (or expected imbalance)
 - Low null percentage
 
 ### Warning Signs
+
 - High null percentage (>5%)
 - Unexpected categories (typos, encoding issues)
 - Extreme imbalance for target variables

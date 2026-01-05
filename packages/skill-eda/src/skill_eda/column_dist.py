@@ -5,8 +5,8 @@ Analyzes the value distribution of a specific column in a dataset
 and produces a markdown report.
 
 Usage:
-    uv run python skills/eda/scripts/column_dist.py --source <path> --column <name>
-    uv run python skills/eda/scripts/column_dist.py --source <path> --column <name> --output report.md
+    eda-column-dist --source <path> --column <name>
+    eda-column-dist --source <path> --column <name> --output report.md
 """
 
 from __future__ import annotations
@@ -15,17 +15,14 @@ import argparse
 import sys
 from pathlib import Path
 
-# Add shared utilities to path
-sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent))
-
-from shared.connection import (
+from ml_skills_core import (
+    MarkdownReport,
     build_scan_query,
     get_connection,
     infer_source_type,
     quote_identifier,
     validate_identifier,
 )
-from shared.report import MarkdownReport
 
 
 def assess_cardinality(unique_count: int, total_count: int) -> str:
@@ -82,7 +79,9 @@ def generate_observations(
             f"Extreme imbalance: top value represents {top_value_pct:.1f}% of data"
         )
     elif top_value_pct > 80:
-        observations.append(f"Class imbalance detected: top value represents {top_value_pct:.1f}% of data")
+        observations.append(
+            f"Class imbalance detected: top value represents {top_value_pct:.1f}% of data"
+        )
 
     return observations
 

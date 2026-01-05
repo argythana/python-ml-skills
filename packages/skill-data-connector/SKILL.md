@@ -16,19 +16,20 @@ Connect to data sources and retrieve basic information about datasets.
 
 ## Available Scripts
 
-### `connect.py` - Inspect Data Source
+### `data-connect` - Inspect Data Source
 
 Connects to a data source and returns schema and summary information.
 
 ```bash
 # Basic usage (outputs to stdout)
-uv run python skills/data-connector/scripts/connect.py --source <path>
+data-connect --source <path>
 
 # Save to file
-uv run python skills/data-connector/scripts/connect.py --source <path> --output report.md
+data-connect --source <path> --output report.md
 ```
 
 **Arguments:**
+
 - `--source` (required): Path to data file or connection string
 - `--output`: Output file path (default: stdout)
 - `--type`: Override source type detection (parquet, csv, json)
@@ -36,6 +37,7 @@ uv run python skills/data-connector/scripts/connect.py --source <path> --output 
 ## Output Format
 
 The script produces a markdown report with:
+
 - Source path and type
 - Row count and column count
 - File size (if applicable)
@@ -65,6 +67,7 @@ The script produces a markdown report with:
 ## Supported Data Sources
 
 The connector auto-detects source type from file extension:
+
 - `.parquet` - Apache Parquet files
 - `.csv` - CSV files (auto-detects delimiter)
 - `.json`, `.jsonl` - JSON files

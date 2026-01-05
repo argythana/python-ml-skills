@@ -17,28 +17,30 @@ Analyze tabular datasets to understand distributions, data quality, and relation
 
 ## Available Tasks
 
-| Task | Script | Description |
-|------|--------|-------------|
-| Column Distribution | `column_dist.py` | Analyze value distribution for a specific column |
+| Task | Command | Description |
+|------|---------|-------------|
+| Column Distribution | `eda-column-dist` | Analyze value distribution for a specific column |
 
 ## Task Documentation
 
 Detailed task templates are available in `tasks/`:
+
 - `tasks/column_distribution.md` - Full documentation for column distribution analysis
 
 ## Quick Start
 
 ```bash
 # Analyze distribution of a column
-uv run python skills/eda/scripts/column_dist.py --source <path> --column <name>
+eda-column-dist --source <path> --column <name>
 
 # Save report to file
-uv run python skills/eda/scripts/column_dist.py --source <path> --column <name> --output report.md
+eda-column-dist --source <path> --column <name> --output report.md
 ```
 
 ## Output Format
 
 All EDA scripts produce markdown reports with:
+
 - Task metadata (source, column, timestamp)
 - Summary statistics
 - Distribution tables or visualizations (as text)
