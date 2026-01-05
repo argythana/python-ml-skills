@@ -87,3 +87,57 @@ uv sync
 data-connect --source data/myfile.parquet
 eda-column-dist --source data/myfile.parquet --column status --output reports/status_dist.md
 ```
+
+## Get the updated skills
+
+When using git dependencies, UV caches the resolved commit. To get updates, you have options:
+
+### Option 1: Force Update with uv sync
+
+#### Re-fetch all git dependencies
+
+`uv sync --refresh`
+
+#### Or refresh specific package
+
+`uv sync --refresh-package skill-eda`
+
+### Option 2: Pin to a Branch (Auto-Update)
+
+```toml
+[tool.uv.sources]
+skill-eda = { git = "<https://github.com/argythana/python-ml-skills>", subdirectory = "packages/skill-eda", branch = "main" }
+```
+
+Then uv sync --refresh gets the latest from main.
+
+### Option 3: Pin to a Tag (Stable Releases)
+
+```toml
+[tool.uv.sources]
+skill-eda = { git = "<https://github.com/argythana/python-ml-skills>", subdirectory = "packages/skill-eda", tag = "v0.2.0" }
+```
+
+This requires uv sync when you update the tag in pyproject.toml.
+
+### Option 4: Pin to Specific Commit (Reproducible)
+
+```toml
+[tool.uv.sources]
+skill-eda = { git = "<https://github.com/argythana/python-ml-skills>", subdirectory = "packages/skill-eda", rev = "cfea6b4" }
+```
+
+Option 4 is the most reproducible, requires manual update.
+
+---
+
+#### Summary
+
+| Scenario                | Command                             |
+|-------------------------|-------------------------------------|
+| Get latest (cached)     | uv sync (uses cached commit)        |
+| Force refresh           | uv sync --refresh                   |
+| Refresh one package     | uv sync --refresh-package skill-eda |
+| Changed tag/rev in toml | uv sync                             |
+
+Recommendation: If you're actively developing the skills, use branch = "main" and run uv sync --refresh when you want updates. For production, pin to tags.
