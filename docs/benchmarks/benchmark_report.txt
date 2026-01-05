@@ -1,0 +1,19 @@
+Generating sample CSV: /tmp/eda_bench_1767617972.csv
+Using CLI: /home/targ/venv_projects/python-ml-skills/docs/benchmarks/mock_cli.py
+Warming up in-process analysis...
+CLI run 1: 113 ms, approx tokens: 92
+CLI run 2: 102 ms, approx tokens: 92
+CLI run 3: 103 ms, approx tokens: 92
+In-process run 1: 77 ms, approx tokens: 139
+In-process run 2: 77 ms, approx tokens: 139
+In-process run 3: 78 ms, approx tokens: 139
+
+Summary (median over runs):
+CLI median time: 103 ms
+In-process median time: 77 ms
+CLI median estimated tokens: 92
+In-process median estimated tokens: 139
+
+Interpretation:
+- The CLI measurement includes subprocess startup overhead and full human-readable formatting.
+- The in-process run simulates MCP-style compact JSON responses and avoids process startup.

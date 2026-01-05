@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import sys
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 
@@ -19,10 +19,10 @@ class MarkdownReport:
         self.title = title
         self.sections: list[str] = []
         self.metadata: dict[str, str] = {
-            "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC"),
+            "generated_at": datetime.now(UTC).strftime("%Y-%m-%d %H:%M:%S UTC"),
         }
 
-    def add_metadata(self, key: str, value: str) -> "MarkdownReport":
+    def add_metadata(self, key: str, value: str) -> MarkdownReport:
         """Add metadata to the report.
 
         Args:
@@ -35,7 +35,7 @@ class MarkdownReport:
         self.metadata[key] = value
         return self
 
-    def add_section(self, heading: str, content: str, level: int = 2) -> "MarkdownReport":
+    def add_section(self, heading: str, content: str, level: int = 2) -> MarkdownReport:
         """Add a section to the report.
 
         Args:
@@ -50,7 +50,7 @@ class MarkdownReport:
         self.sections.append(f"{prefix} {heading}\n\n{content}")
         return self
 
-    def add_text(self, text: str) -> "MarkdownReport":
+    def add_text(self, text: str) -> MarkdownReport:
         """Add raw text/markdown to the report.
 
         Args:
@@ -62,7 +62,7 @@ class MarkdownReport:
         self.sections.append(text)
         return self
 
-    def add_code_block(self, code: str, language: str = "") -> "MarkdownReport":
+    def add_code_block(self, code: str, language: str = "") -> MarkdownReport:
         """Add a code block to the report.
 
         Args:
@@ -80,7 +80,7 @@ class MarkdownReport:
         headers: list[str],
         rows: list[list[str]],
         alignments: list[str] | None = None,
-    ) -> "MarkdownReport":
+    ) -> MarkdownReport:
         """Add a markdown table to the report.
 
         Args:
@@ -109,15 +109,13 @@ class MarkdownReport:
         sep_row = "| " + " | ".join(sep_parts) + " |"
 
         # Build data rows
-        data_rows = []
-        for row in rows:
-            data_rows.append("| " + " | ".join(str(cell) for cell in row) + " |")
+        data_rows = ["| " + " | ".join(str(cell) for cell in row) + " |" for row in rows]
 
-        table = "\n".join([header_row, sep_row] + data_rows)
+        table = "\n".join([header_row, sep_row, *data_rows])
         self.sections.append(table)
         return self
 
-    def add_summary_stats(self, stats: dict[str, str | int | float]) -> "MarkdownReport":
+    def add_summary_stats(self, stats: dict[str, str | int | float]) -> MarkdownReport:
         """Add a summary statistics block.
 
         Args:

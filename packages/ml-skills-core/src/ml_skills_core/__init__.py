@@ -12,11 +12,11 @@ from ml_skills_core.connection import (
 from ml_skills_core.report import MarkdownReport
 
 __all__ = [
+    "MarkdownReport",
     "build_scan_query",
     "get_connection",
     "get_table_info",
     "infer_source_type",
-    "MarkdownReport",
     "query_to_df",
     "quote_identifier",
     "validate_identifier",

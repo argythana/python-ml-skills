@@ -77,13 +77,11 @@ def infer_source_type(source: str) -> str:
     source_lower = source.lower()
     if source_lower.endswith(".parquet"):
         return "parquet"
-    elif source_lower.endswith(".csv"):
+    if source_lower.endswith(".csv"):
         return "csv"
-    elif source_lower.endswith(".json") or source_lower.endswith(".jsonl"):
+    if source_lower.endswith(".json") or source_lower.endswith(".jsonl"):
         return "json"
-    elif source_lower.endswith(".db") or source_lower.endswith(".duckdb"):
-        return "database"
-    elif "://" in source:
+    if source_lower.endswith(".db") or source_lower.endswith(".duckdb") or "://" in source:
         return "database"
     return "unknown"
 
@@ -108,14 +106,13 @@ def build_scan_query(source: str, source_type: str | None = None) -> str:
 
     if source_type == "parquet":
         return f"parquet_scan('{safe_source}')"
-    elif source_type == "csv":
+    if source_type == "csv":
         return f"read_csv_auto('{safe_source}')"
-    elif source_type == "json":
+    if source_type == "json":
         return f"read_json_auto('{safe_source}')"
-    elif source_type == "database":
+    if source_type == "database":
         raise ValueError("Database connections require explicit table specification")
-    else:
-        raise ValueError(f"Unknown source type for: {source}")
+    raise ValueError(f"Unknown source type for: {source}")
 
 
 def query_to_df(
@@ -152,11 +149,14 @@ def get_table_info(
     scan = build_scan_query(source, source_type)
 
     # Get row count
-    result = conn.execute(f"SELECT COUNT(*) FROM {scan}").fetchone()
+    # scan is safely constructed via build_scan_query with escape_string
+    count_query = f"SELECT COUNT(*) FROM {scan}"  # noqa: S608
+    result = conn.execute(count_query).fetchone()
     row_count = result[0] if result else 0
 
     # Get column info
-    columns = conn.execute(f"DESCRIBE SELECT * FROM {scan}").fetchall()
+    describe_query = f"DESCRIBE SELECT * FROM {scan}"  # noqa: S608
+    columns = conn.execute(describe_query).fetchall()
     column_info = [{"name": col[0], "type": col[1]} for col in columns]
 
     # Get file size if it's a file
