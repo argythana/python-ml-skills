@@ -1,0 +1,8 @@
+# python virtual environment
+.venv
+
+# pycache
+__pycache__/
+
+# test data
+data/

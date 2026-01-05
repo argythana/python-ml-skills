@@ -1,0 +1,10 @@
+{
+  "name": "python-ml-skills",
+  "version": "0.1.0",
+  "description": "Machine Learning skills for agents. Provides reusable tasks for data connection, exploratory data analysis, and ML workflows. Use these skills when working with tabular data, analyzing distributions, checking data quality, or preparing data for modeling.",
+  "author": {
+    "name": "python-ml-skills contributors"
+  },
+  "skills": "./skills",
+  "repository": "https://github.com/your-org/python-ml-skills"
+}
