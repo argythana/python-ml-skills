@@ -152,7 +152,8 @@ def get_table_info(
     scan = build_scan_query(source, source_type)
 
     # Get row count
-    row_count = conn.execute(f"SELECT COUNT(*) FROM {scan}").fetchone()[0]
+    result = conn.execute(f"SELECT COUNT(*) FROM {scan}").fetchone()
+    row_count = result[0] if result else 0
 
     # Get column info
     columns = conn.execute(f"DESCRIBE SELECT * FROM {scan}").fetchall()

@@ -140,17 +140,26 @@ def main() -> int:
         safe_col = quote_identifier(args.column)
 
         # Get total count
-        total = conn.execute(f"SELECT COUNT(*) FROM {scan}").fetchone()[0]
+        result = conn.execute(f"SELECT COUNT(*) FROM {scan}").fetchone()
+        if result is None:
+            raise ValueError("Failed to get total count")
+        total = result[0]
 
         # Get null count
-        nulls = conn.execute(
+        result = conn.execute(
             f"SELECT COUNT(*) FROM {scan} WHERE {safe_col} IS NULL"
-        ).fetchone()[0]
+        ).fetchone()
+        if result is None:
+            raise ValueError("Failed to get null count")
+        nulls = result[0]
 
         # Get unique count
-        unique_count = conn.execute(
+        result = conn.execute(
             f"SELECT COUNT(DISTINCT {safe_col}) FROM {scan}"
-        ).fetchone()[0]
+        ).fetchone()
+        if result is None:
+            raise ValueError("Failed to get unique count")
+        unique_count = result[0]
 
         # Get value distribution
         distribution_query = f"""
