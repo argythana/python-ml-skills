@@ -118,14 +118,31 @@ Structure your review as:
 - [ ] Step 2
 ```
 
-## Severity Guidelines
+## Severity Calibration
 
-| Level | Emoji | Meaning | Examples |
-|-------|-------|---------|----------|
-| Critical | 🔴 | Blocks merge | Security vulnerabilities, architectural violations, data loss risks |
-| High | 🟠 | Fix before merge | Runtime bugs, missing error handling, missing critical tests |
-| Moderate | 🟡 | Should address | Code quality, missing tests, incomplete docs |
-| Low | 🔵 | Nice to have | Style, minor docs, refactoring suggestions |
+**🔴 Critical** (blocks merge):
+- Exploitable security flaws: SQL injection, auth bypass, hardcoded secrets
+- Data loss/corruption: unhandled writes, race conditions on shared state
+- Breaking changes: public API signature changes without version bump
+
+**🟠 High** (fix before merge):
+- Blocking calls in async contexts (sync I/O in async functions)
+- Hardcoded paths (`/tmp/...`) instead of `tmp_path` fixture in tests
+- Test config vs data mismatch (e.g., min_positions=2 but test sends 1)
+- Resource leaks: unclosed connections, files, or sockets
+- N+1 queries in loops, unindexed lookups on large tables
+- Logic in wrong layer (DB access in pure algorithm packages)
+
+**🟡 Moderate** (should address):
+- Missing tests for new code paths
+- Functions >50 lines, cyclomatic complexity >10
+- Swallowed exceptions, unclear error messages
+- Missing `tmp_path` for file I/O in tests
+
+**🔵 Low** (optional):
+- Style preferences beyond linter rules
+- Minor refactoring opportunities
+- Documentation for internal functions
 
 ## Key Principles
 
