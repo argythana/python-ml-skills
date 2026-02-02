@@ -8,35 +8,33 @@ Claude Code skills for production-grade code review and exploratory data analysi
 git clone https://github.com/argythana/python-ml-skills.git ~/.claude/skills/python-ml-skills
 ```
 
-Add to your `~/.claude/CLAUDE.md`:
-
-```markdown
-import: ~/.claude/skills/python-ml-skills/code-review.md
-import: ~/.claude/skills/python-ml-skills/eda.md
-```
+Skills are auto-discovered from `~/.claude/skills/` - no CLAUDE.md imports needed.
 
 ## Skills
 
 | Skill | Description |
 |-------|-------------|
-| [code-review.md](code-review.md) | Python code review: architecture, security, quality, testing, docs |
-| [eda.md](eda.md) | Exploratory data analysis for tabular datasets |
+| [code-review](code-review/SKILL.md) | Python code review: architecture, security, quality, testing, docs |
+| [eda](eda/SKILL.md) | Exploratory data analysis for tabular datasets |
 
 ## Structure
 
-```
+```text
 python-ml-skills/
-├── code-review.md      # Main skill (<100 lines)
-├── eda.md              # Main skill (<100 lines)
-├── references/         # Detailed content (loaded when needed)
-│   ├── architecture.md
-│   ├── security.md
-│   ├── quality.md
-│   ├── testing.md
-│   ├── documentation.md
-│   ├── deployment.md
-│   ├── consistency.md
-│   └── eda-analysis.md
+├── code-review/
+│   ├── SKILL.md              # Main skill (<100 lines)
+│   └── references/           # Detailed checklists
+│       ├── architecture.md
+│       ├── security.md
+│       ├── quality.md
+│       ├── testing.md
+│       ├── documentation.md
+│       ├── deployment.md
+│       └── consistency.md
+├── eda/
+│   ├── SKILL.md              # Main skill (<100 lines)
+│   └── references/
+│       └── eda-analysis.md   # Analysis methodology
 └── README.md
 ```
 
@@ -44,9 +42,9 @@ python-ml-skills/
 
 Ask Claude to review code or analyze data:
 
-- "Review this PR for security issues"
-- "Do a code review of the changes"
-- "Analyze the distribution of the status column in data.parquet"
+- "Review this PR"
+- "Do a code review focusing on security"
+- "Analyze the distribution of the status column"
 - "Check data quality for this dataset"
 
 ## Updating
