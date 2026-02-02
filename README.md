@@ -18,6 +18,7 @@ This repository is a UV workspace containing self-contained skill packages. Each
 |---------|---------|-------------|
 | `skill-data-connector` | `data-connect` | Connect to and inspect data sources |
 | `skill-eda` | `eda-column-dist` | Exploratory Data Analysis for tabular data |
+| `skill-code-review` | *(markdown only)* | Production-grade Python code review |
 
 ## Installation
 
