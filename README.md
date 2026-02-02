@@ -1,141 +1,56 @@
 # Python ML Skills
 
-Reusable Machine Learning skills for AI agents, distributed via Model Context Protocol (MCP).
-
-Inspired by [Sionic AI's approach to logging ML experiments as reusable agent skills](https://huggingface.co/blog/sionic-ai/claude-code-skills-training).
-
-## Overview
-
-This repository is a UV workspace containing self-contained skill packages. Each skill includes:
-
-- `SKILL.md` - Instructions for the agent
-- `tasks/*.md` - Task templates with usage patterns
-- `src/` - Python package with CLI tools
-
-## Available Skills
-
-| Package | Command | Description |
-|---------|---------|-------------|
-| `skill-data-connector` | `data-connect` | Connect to and inspect data sources |
-| `skill-eda` | `eda-column-dist` | Exploratory Data Analysis for tabular data |
-| `skill-code-review` | *(markdown only)* | Production-grade Python code review |
+Claude Code skills for production-grade code review and exploratory data analysis.
 
 ## Installation
 
-### Development Setup (UV Workspace)
-
 ```bash
-git clone https://github.com/<your-org>/python-ml-skills.git
-cd python-ml-skills
-uv sync
+git clone https://github.com/argythana/python-ml-skills.git ~/.claude/skills/python-ml-skills
 ```
 
-### Install Individual Skills
+Add to your `~/.claude/CLAUDE.md`:
 
-```bash
-# Install from git subdirectory
-pip install "skill-eda @ git+https://github.com/<your-org>/python-ml-skills#subdirectory=packages/skill-eda"
-
-# Or use UV sources in your project
-# pyproject.toml:
-# [tool.uv.sources]
-# skill-eda = { git = "https://github.com/<your-org>/python-ml-skills", subdirectory = "packages/skill-eda" }
+```markdown
+import: ~/.claude/skills/python-ml-skills/code-review.md
+import: ~/.claude/skills/python-ml-skills/eda.md
 ```
 
-### Claude Code (MCP)
+## Skills
 
-```bash
-/plugin marketplace add <your-org>/python-ml-skills
-/plugin install skill-eda@python-ml-skills
+| Skill | Description |
+|-------|-------------|
+| [code-review.md](code-review.md) | Python code review: architecture, security, quality, testing, docs |
+| [eda.md](eda.md) | Exploratory data analysis for tabular datasets |
+
+## Structure
+
 ```
-
-## Quick Start
-
-```bash
-# Inspect a data source
-data-connect --source data/sample.parquet
-
-# Analyze column distribution
-eda-column-dist --source data/sample.parquet --column status
-
-# Save report to file
-eda-column-dist --source data/sample.parquet --column status --output report.md
-```
-
-## Project Structure
-
-```text
 python-ml-skills/
-├── pyproject.toml                      # Workspace root
-├── .claude-plugin/
-│   └── plugin.json                     # MCP plugin manifest
-├── packages/
-│   ├── ml-skills-core/                 # Shared utilities (DuckDB, reports)
-│   │   ├── pyproject.toml
-│   │   └── src/ml_skills_core/
-│   │       ├── connection.py
-│   │       └── report.py
-│   │
-│   ├── skill-data-connector/           # Data connector skill
-│   │   ├── pyproject.toml
-│   │   ├── SKILL.md
-│   │   └── src/skill_data_connector/
-│   │       └── connect.py
-│   │
-│   └── skill-eda/                      # EDA skill
-│       ├── pyproject.toml
-│       ├── SKILL.md
-│       ├── tasks/
-│       │   └── column_distribution.md
-│       └── src/skill_eda/
-│           └── column_dist.py
-└── docs/
-    └── drafts/
+├── code-review.md      # Main skill (<100 lines)
+├── eda.md              # Main skill (<100 lines)
+├── references/         # Detailed content (loaded when needed)
+│   ├── architecture.md
+│   ├── security.md
+│   ├── quality.md
+│   ├── testing.md
+│   ├── documentation.md
+│   ├── deployment.md
+│   ├── consistency.md
+│   └── eda-analysis.md
+└── README.md
 ```
 
-## Architecture
+## Usage
 
-```text
-┌─────────────────────────────────────────────────────────────┐
-│              python-ml-skills (THIS REPO)                   │
-│                                                             │
-│  UV Workspace with self-contained skill packages            │
-│  Each skill: SKILL.md + tasks/ + src/ (CLI tools)           │
-└──────────────────────────────┬──────────────────────────────┘
-                               │
-                               │ pip install / UV sources / MCP
-                               ▼
-┌─────────────────────────────────────────────────────────────┐
-│                    USER'S PROJECT                           │
-│                                                             │
-│  Install skills as dependencies:                            │
-│  - pip install skill-eda                                    │
-│  - UV workspace source                                      │
-│  - MCP plugin                                               │
-└─────────────────────────────────────────────────────────────┘
+Ask Claude to review code or analyze data:
+
+- "Review this PR for security issues"
+- "Do a code review of the changes"
+- "Analyze the distribution of the status column in data.parquet"
+- "Check data quality for this dataset"
+
+## Updating
+
+```bash
+cd ~/.claude/skills/python-ml-skills && git pull
 ```
-
-## Output Format
-
-All CLI tools support:
-
-- **stdout** (default) - pipe or redirect as needed
-- **`--output <file>`** - write directly to file
-
-Reports are generated in Markdown format for readability and version control.
-
-## Adding a New Skill
-
-1. Create `packages/skill-<name>/`
-2. Add `pyproject.toml` with dependency on `ml-skills-core`
-3. Add `SKILL.md` with agent instructions
-4. Add `tasks/*.md` for detailed task documentation
-5. Add `src/skill_<name>/` with Python code
-6. Define CLI entry points in `[project.scripts]`
-
-## Contributing
-
-1. Each skill must be self-contained (SKILL.md + code in same package)
-2. Use `ml-skills-core` for DuckDB connection and report generation
-3. Define CLI entry points via `[project.scripts]`
-4. Keep SKILL.md data-source agnostic
