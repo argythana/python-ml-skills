@@ -1,13 +1,16 @@
 ---
 name: eda
 description: >
-  Use this skill when the user needs exploratory analysis for tabular data:
-  analyze column distributions, check data quality, examine class balance,
-  detect missing patterns, identify high-cardinality columns, or generate
-  summary statistics. Trigger on requests like "analyze this column", "check
-  the distribution", "look for missing values", or "is this target
-  imbalanced". Do NOT use it just to verify a file is readable or list its
-  schema; use `data-connector` first for basic access checks.
+  Use this skill when the user wants exploratory analysis of one tabular
+  dataset (Parquet, CSV, JSON, JSONL) — column distributions, data quality,
+  class balance, missing patterns, high-cardinality detection, or summary
+  statistics. Trigger on prompts like "analyze this column", "check the
+  distribution", "look for missing values", "is this target imbalanced", or
+  "run EDA on this file". If the dataset path or column is missing, ask for
+  it after routing. Do NOT use it just to verify a file is readable, list its
+  schema, or count rows; use `dataset-inspector` first for basic access checks.
+  Do NOT use it for model training, feature engineering, non-tabular data
+  (images, text, audio), or remote warehouse exploration.
 ---
 
 # Exploratory Data Analysis

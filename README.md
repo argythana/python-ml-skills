@@ -16,8 +16,8 @@ skillden add code-review --config local \
   --repo /path/to/python-ml-skills --path code-review --mode link
 skillden add eda --config local \
   --repo /path/to/python-ml-skills --path eda --mode link
-skillden add data-connector --config local \
-  --repo /path/to/python-ml-skills --path data-connector --mode link
+skillden add dataset-inspector --config local \
+  --repo /path/to/python-ml-skills --path dataset-inspector --mode link
 skillden add do-literature-review --config local \
   --repo /path/to/python-ml-skills --path do-literature-review --mode link
 ```
@@ -34,7 +34,7 @@ git clone https://github.com/argythana/python-ml-skills.git ~/.claude/skills/pyt
 | --- | --- |
 | [code-review](code-review/SKILL.md) | Python code review: architecture, security, quality, testing, docs |
 | [eda](eda/SKILL.md) | Exploratory analysis for tabular datasets |
-| [data-connector](data-connector/SKILL.md) | Inspect local Parquet, CSV, JSON, or JSONL files |
+| [dataset-inspector](dataset-inspector/SKILL.md) | Inspect local Parquet, CSV, JSON, or JSONL files |
 | [do-literature-review](do-literature-review/SKILL.md) | Verified literature reviews with citation audit trails |
 
 ## Structure
@@ -48,7 +48,7 @@ python-ml-skills/
 │   ├── SKILL.md
 │   ├── references/
 │   └── scripts/
-├── data-connector/
+├── dataset-inspector/
 │   ├── SKILL.md
 │   └── scripts/
 ├── do-literature-review/
