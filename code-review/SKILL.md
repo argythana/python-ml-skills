@@ -1,6 +1,14 @@
 ---
-name: python-code-review
-description: Production-grade Python code review. Use when reviewing code, PRs, or analyzing code quality. Checks architecture, security, quality, testing, documentation, deployment, and consistency. Provides severity-rated issues with fix suggestions.
+name: code-review
+description: >
+  Use this skill when the user wants a production-grade review of Python code,
+  a Python pull request, or a Python-focused diff. Check architecture,
+  security, code quality, tests, documentation, deployment risk, and
+  code-documentation consistency. Trigger on requests like "review this Python
+  PR", "audit this diff", "check code quality", or "give me a fix plan". Do
+  NOT use it for non-Python code review, writing new features, dependency-only
+  changes, or pytest-suite-specific audits where `pytest-suite-review` is a
+  better fit.
 ---
 
 # Python Code Review

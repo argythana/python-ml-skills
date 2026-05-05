@@ -1,0 +1,83 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "pathname"
+require "yaml"
+
+MAX_DESCRIPTION_LENGTH = 1024
+
+def validate_frontmatter(path, raw)
+  match = raw.match(/\A---\n(.*?)\n---(?:\n|\z)/m)
+  return ["missing frontmatter block at top of file"] unless match
+
+  frontmatter_raw = match[1]
+  errors = []
+
+  begin
+    frontmatter = YAML.safe_load(frontmatter_raw, permitted_classes: [], aliases: false)
+  rescue Psych::SyntaxError => e
+    return ["YAML parse error: #{e.message.lines.first&.strip || e.message}"]
+  end
+
+  return ["frontmatter must be a YAML mapping"] unless frontmatter.is_a?(Hash)
+
+  unless frontmatter.keys == ["name", "description"]
+    errors << "frontmatter keys must be exactly ['name', 'description'] in that order"
+  end
+
+  name = frontmatter["name"]
+  description = frontmatter["description"]
+  directory = File.basename(File.dirname(path))
+
+  unless name.is_a?(String) && !name.strip.empty?
+    errors << "name must be a non-empty string"
+  end
+
+  unless description.is_a?(String) && !description.strip.empty?
+    errors << "description must be a non-empty string"
+  end
+
+  if description.is_a?(String) && description.strip.length >= MAX_DESCRIPTION_LENGTH
+    errors << "description must be less than #{MAX_DESCRIPTION_LENGTH} characters"
+  end
+
+  if name.is_a?(String) && name != directory
+    errors << "name must match directory '#{directory}'"
+  end
+
+  unless frontmatter_raw.match?(/^description:\s*>\s*$/)
+    errors << "description must use folded scalar style `description: >`"
+  end
+
+  errors
+end
+
+repo_root = Pathname(__dir__).dirname
+paths = ARGV.empty? ? Dir.chdir(repo_root) { Dir.glob("*/SKILL.md").sort } : ARGV.sort
+
+if paths.empty?
+  puts "No skill files to validate."
+  exit 0
+end
+
+failures = []
+
+paths.each do |path|
+  content = (repo_root / path).read
+  errors = validate_frontmatter(path, content)
+  failures << [path, errors] unless errors.empty?
+rescue Errno::ENOENT => e
+  failures << [path, ["could not read file: #{e.message}"]]
+end
+
+if failures.empty?
+  puts "Validated #{paths.length} skill frontmatter file(s)."
+  exit 0
+end
+
+failures.each do |path, errors|
+  warn "#{path}:"
+  errors.each { |error| warn "  - #{error}" }
+end
+
+exit 1

@@ -1,0 +1,149 @@
+#!/usr/bin/env python3
+"""Inspect a local tabular data source and print a Markdown report."""
+
+from __future__ import annotations
+
+import argparse
+import sys
+from datetime import UTC, datetime
+from pathlib import Path
+
+try:
+    import duckdb
+except ModuleNotFoundError:  # pragma: no cover - environment guard
+    sys.stderr.write("Error: duckdb is required. Install it with `python -m pip install duckdb`.\n")
+    raise SystemExit(1) from None
+
+
+class MarkdownReport:
+    def __init__(self, title: str) -> None:
+        self.title = title
+        self.sections: list[str] = []
+        self.metadata: dict[str, str] = {
+            "generated_at": datetime.now(UTC).strftime("%Y-%m-%d %H:%M:%S UTC"),
+        }
+
+    def add_metadata(self, key: str, value: str) -> None:
+        self.metadata[key] = value
+
+    def add_section(self, heading: str, content: str = "", level: int = 2) -> None:
+        prefix = "#" * level
+        self.sections.append(f"{prefix} {heading}\n\n{content}".rstrip())
+
+    def add_table(self, headers: list[str], rows: list[list[str]]) -> None:
+        table = [
+            "| " + " | ".join(headers) + " |",
+            "| " + " | ".join("---" for _ in headers) + " |",
+        ]
+        table.extend("| " + " | ".join(str(cell) for cell in row) + " |" for row in rows)
+        self.sections.append("\n".join(table))
+
+    def build(self) -> str:
+        parts = [f"# {self.title}"]
+        if self.metadata:
+            parts.append("\n".join(f"- **{key}**: {value}" for key, value in self.metadata.items()))
+        parts.extend(self.sections)
+        return "\n\n".join(parts)
+
+    def write(self, output: str | None) -> None:
+        content = self.build() + "\n"
+        if output is None:
+            sys.stdout.write(content)
+            return
+        Path(output).write_text(content, encoding="utf-8")
+
+
+def escape_string(value: str) -> str:
+    return value.replace("'", "''")
+
+
+def infer_source_type(source: str) -> str:
+    source_lower = source.lower()
+    if source_lower.endswith(".parquet"):
+        return "parquet"
+    if source_lower.endswith(".csv"):
+        return "csv"
+    if source_lower.endswith(".json") or source_lower.endswith(".jsonl"):
+        return "json"
+    return "unknown"
+
+
+def build_scan_query(source: str, source_type: str) -> str:
+    safe_source = escape_string(source)
+    if source_type == "parquet":
+        return f"parquet_scan('{safe_source}')"
+    if source_type == "csv":
+        return f"read_csv_auto('{safe_source}')"
+    if source_type == "json":
+        return f"read_json_auto('{safe_source}')"
+    raise ValueError(f"unknown source type for {source!r}; pass --type")
+
+
+def format_file_size(size_bytes: int | None) -> str:
+    if size_bytes is None:
+        return "N/A"
+    size = float(size_bytes)
+    for unit in ["B", "KB", "MB", "GB"]:
+        if size < 1024:
+            return f"{size:.2f} {unit}"
+        size /= 1024
+    return f"{size:.2f} TB"
+
+
+def get_table_info(source: str, source_type: str) -> dict[str, object]:
+    scan = build_scan_query(source, source_type)
+    conn = duckdb.connect(":memory:")
+    try:
+        row_count = conn.execute(f"SELECT COUNT(*) FROM {scan}").fetchone()[0]  # noqa: S608
+        columns = conn.execute(f"DESCRIBE SELECT * FROM {scan}").fetchall()  # noqa: S608
+    finally:
+        conn.close()
+
+    source_path = Path(source)
+    return {
+        "row_count": row_count,
+        "column_count": len(columns),
+        "columns": [{"name": col[0], "type": col[1]} for col in columns],
+        "file_size_bytes": source_path.stat().st_size if source_path.exists() else None,
+    }
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Inspect a local tabular data source.")
+    parser.add_argument("--source", required=True, help="Path to a Parquet, CSV, JSON, or JSONL file.")
+    parser.add_argument("--output", help="Output file path. Defaults to stdout.")
+    parser.add_argument("--type", choices=["parquet", "csv", "json"], help="Override source type detection.")
+    return parser.parse_args()
+
+
+def main() -> int:
+    args = parse_args()
+    source_path = Path(args.source)
+    if not source_path.exists():
+        sys.stderr.write(f"Error: source not found: {args.source}\n")
+        return 1
+
+    try:
+        source_type = args.type or infer_source_type(args.source)
+        info = get_table_info(args.source, source_type)
+    except Exception as exc:
+        sys.stderr.write(f"Error connecting to source: {exc}\n")
+        return 1
+
+    report = MarkdownReport("Data Connection Report")
+    report.add_metadata("source", args.source)
+    report.add_metadata("type", source_type)
+    report.add_metadata("row_count", f"{info['row_count']:,}")
+    report.add_metadata("column_count", str(info["column_count"]))
+    report.add_metadata("file_size", format_file_size(info["file_size_bytes"]))
+    report.add_section("Columns")
+    report.add_table(
+        headers=["Column", "Type"],
+        rows=[[col["name"], col["type"]] for col in info["columns"]],
+    )
+    report.write(args.output)
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
