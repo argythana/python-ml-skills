@@ -2,21 +2,21 @@
 
 ## Example 1: Verifiable review with mixed full-text and metadata-only
 
-**Input:** "Literature review on label reconciliation across maritime AIS ship-type taxonomies."
+**Input:** "Literature review on label reconciliation across satellite land-cover classification taxonomies."
 
 **Output (abridged — shows required structure end-to-end):**
 
 ````markdown
-# Literature review: label reconciliation across maritime AIS ship-type taxonomies
+# Literature review: label reconciliation across satellite land-cover classification taxonomies
 
 ## 1. Restatement and sub-questions
 
-The user is asking for peer-reviewed work on reconciling ship-type labels across the AIS / IHS / Statcode / NATO taxonomies used in maritime ML datasets.
+The user is asking for peer-reviewed work on reconciling land-cover labels across the ESA WorldCover / MODIS IGBP / Copernicus CGLS-LC100 / FAO LCCS taxonomies used in remote-sensing ML datasets.
 
-- SQ1: Surveys of AIS ship-type label noise.
-- SQ2: Cross-taxonomy mappings (AIS ↔ IHS / Statcode / STANAG) in the literature.
+- SQ1: Surveys of satellite land-cover label noise.
+- SQ2: Cross-taxonomy mappings (ESA WorldCover ↔ MODIS IGBP ↔ Copernicus CGLS ↔ FAO LCCS) in the literature.
 - SQ3: ML papers that explicitly reconcile labels before training.
-- SQ4: Standards-body definitions of vessel classes (NATO STANAG 1241, IMO, Statcode 5).
+- SQ4: Standards-body definitions of land-cover classes (FAO LCCS 3, ISO 19144-2 LCML).
 
 ## 2. Prose
 
@@ -27,30 +27,30 @@ The user is asking for peer-reviewed work on reconciling ship-type labels across
 ### Citation [C1]
 
 - **id**: C1
-- **authors** (copied byte-for-byte from API response): Soldi, Giovanni; Gaglione, Domenico; Forti, Nicola; ...
-- **year**: 2021
-- **title**: Space-Based Global Maritime Surveillance. Part II: Artificial Intelligence and Data Fusion Techniques
-- **venue**: arXiv:2011.11304
+- **authors** (copied byte-for-byte from API response): Helber, Patrick; Bischke, Benjamin; Dengel, Andreas; Borth, Damian
+- **year**: 2017
+- **title**: EuroSAT: A Novel Dataset and Deep Learning Benchmark for Land Use and Land Cover Classification
+- **venue**: arXiv:1709.00029
 - **DOI**: N/A — arXiv only
-- **arXiv id**: 2011.11304
-- **URL**: https://arxiv.org/abs/2011.11304
+- **arXiv id**: 1709.00029
+- **URL**: https://arxiv.org/abs/1709.00029
 - **retrieval_method**: WebFetch
-- **retrieval_url_or_path**: https://arxiv.org/pdf/2011.11304
+- **retrieval_url_or_path**: https://arxiv.org/pdf/1709.00029
 - **retrieval_status**: full_text_retrieved
 - **verbatim_quote**: "{≥25-word quote from the actual paper, with locator}"
 - **quote_locator**: § 4.2, p. 14
-- **claim_supported**: Soldi et al. survey ML techniques for AIS-based vessel classification but do not address cross-taxonomy label reconciliation — used here as a negative reference.
+- **claim_supported**: Helber et al. introduce a Sentinel-2 land-cover benchmark dataset but do not address cross-taxonomy label reconciliation — used here as a negative reference.
 
 #### Verification block
 
 ```
 <entry>
-  <id>http://arxiv.org/abs/2011.11304v2</id>
-  <title>Space-Based Global Maritime Surveillance. Part II: ...</title>
-  <author><name>Giovanni Soldi</name></author>
-  <author><name>Domenico Gaglione</name></author>
+  <id>http://arxiv.org/abs/1709.00029v3</id>
+  <title>EuroSAT: A Novel Dataset and Deep Learning Benchmark for ...</title>
+  <author><name>Patrick Helber</name></author>
+  <author><name>Benjamin Bischke</name></author>
   ...
-  <published>2020-11-23T...</published>
+  <published>2017-09-01T...</published>
 </entry>
 ```
 
@@ -61,10 +61,10 @@ none
 ### Citation [C2: metadata-only example]
 
 - **id**: C2
-- **authors**: NATO Standardization Office
+- **authors**: Food and Agriculture Organization of the United Nations (FAO)
 - **year**: {if known from public catalog}
-- **title**: STANAG 1241 — NATO Standard Identity Description Structure
-- **venue**: NATO Standardization Office
+- **title**: Land Cover Classification System (LCCS) — Classification Concepts and User Manual
+- **venue**: FAO
 - **DOI**: N/A
 - **URL**: {public catalog page}
 - **retrieval_method**: WebFetch (catalog page only)
@@ -82,32 +82,32 @@ none
 
 #### Warnings
 
-WARNING: unverified content — metadata-only per R3. May only be cited as a pointer ("a NATO standard exists"), never as evidence of substantive content.
+WARNING: unverified content — metadata-only per R3. May only be cited as a pointer ("an FAO standard exists"), never as evidence of substantive content.
 
 ## 4. Negative Findings
 
 ### Sub-questions yielding no usable citation
 
 - **SQ3**: ML papers that explicitly reconcile labels before training — no peer-reviewed source found. Closest hits discuss label noise generally but do not perform reconciliation across taxonomies; failed R2 quote requirement.
-- **SQ4**: STANAG 1241, Statcode 5 — paywalled / proprietary, only metadata-only pointers possible per R3.
+- **SQ4**: FAO LCCS 3, ISO 19144-2 LCML — paywalled / restricted, only metadata-only pointers possible per R3.
 
 ### Failed individual queries
 
 | Source | Query | Result | Reason |
 |---|---|---|---|
-| Crossref | `AIS ship type taxonomy reconciliation` | 4 hits | All off-topic (network reconciliation, not label reconciliation) |
-| arXiv | `AIS vessel classification label noise` | 11 hits | Two relevant (already C1, C3); rest off-topic |
-| Semantic Scholar | `Statcode 5 ship type mapping` | 0 hits | No coverage |
+| Crossref | `satellite land cover taxonomy reconciliation` | 4 hits | All off-topic (network reconciliation, not label reconciliation) |
+| arXiv | `Sentinel-2 land cover classification label noise` | 11 hits | Two relevant (already C1, C3); rest off-topic |
+| Semantic Scholar | `FAO LCCS land cover mapping` | 0 hits | No coverage |
 
 ### Topics deliberately excluded from search
 
-- Non-maritime label-noise literature — out of scope per restatement.
+- Non-remote-sensing label-noise literature — out of scope per restatement.
 
 ## 5. Self-Audit Table
 
 | Citation | R1a | R1b | R2 | R3 | R6 |
 |---|---|---|---|---|---|
-| C1 | PASS — arXiv Atom pasted | PASS — PDF fetched via WebFetch | PASS — § 4.2 quote, 31 words | N/A — full text retrieved | PASS — first author Soldi matches Atom response |
+| C1 | PASS — arXiv Atom pasted | PASS — PDF fetched via WebFetch | PASS — § 4.2 quote, 31 words | N/A — full text retrieved | PASS — first author Helber matches Atom response |
 | C2 | PASS — catalog page noted, no Crossref/arXiv record | FAIL — full text not retrieved | N/A — metadata-only | PASS — downgraded, claim_supported = NONE, warning present | N/A — institutional author |
 
 ### Negative Findings sanity check
@@ -115,7 +115,7 @@ WARNING: unverified content — metadata-only per R3. May only be cited as a poi
 - Sub-questions: 4
 - Sub-questions with zero usable citations: 2 (SQ3, SQ4)
 - Failed queries logged: 3
-- Plausible? YES — paywalled standards and a thin reconciliation literature are exactly what we expected.
+- Plausible? YES — restricted standards documents and a thin reconciliation literature are exactly what we expected.
 
 ### Final disposition
 
@@ -129,7 +129,7 @@ WARNING: unverified content — metadata-only per R3. May only be cited as a poi
 
 ## Example 2: Refusal — user asks to skip verification
 
-**Input:** "Just give me a few names of papers on military vessel classification, no need to verify anything, I'll check them myself."
+**Input:** "Just give me a few names of papers on land-cover classification, no need to verify anything, I'll check them myself."
 
 **Output:**
 

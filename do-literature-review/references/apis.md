@@ -37,11 +37,11 @@ Example trimmed paste:
 Example trimmed paste:
 ```xml
 <entry>
-  <id>http://arxiv.org/abs/2509.18109v1</id>
+  <id>http://arxiv.org/abs/1709.00029v3</id>
   <title>...</title>
-  <author><name>S. M. Nielsen</name></author>
+  <author><name>Patrick Helber</name></author>
   <author><name>...</name></author>
-  <published>2025-09-22T...</published>
+  <published>2017-09-01T...</published>
 </entry>
 ```
 
@@ -62,7 +62,7 @@ Example trimmed paste:
 ## When neither Crossref nor arXiv has a record
 
 - Books (some have DOIs, many do not).
-- NATO STANAGs, ISO/IEC/IMO standards, MIL-STDs, ITU recommendations.
+- ISO/IEC standards, ITU recommendations, FAO/WHO guidelines.
 - Corporate whitepapers, blog posts, vendor documentation.
 - Government reports.
 

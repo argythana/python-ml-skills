@@ -9,7 +9,7 @@ This is the rule that closes the loop. The other rules (R1, R2, R3, R4, R6) defi
 ```
 | Citation | R1a metadata API call | R1b full-text retrieval | R2 verbatim quote ≥25w + locator | R3 paywall handled | R6 authors copied from API |
 |----------|------------------------|--------------------------|----------------------------------|---------------------|------------------------------|
-| C1       | PASS — Crossref JSON pasted | PASS — PDF fetched     | PASS — § 4.2, 31 words           | N/A — full text retrieved | PASS — Soldi matches Crossref |
+| C1       | PASS — Crossref JSON pasted | PASS — PDF fetched     | PASS — § 4.2, 31 words           | N/A — full text retrieved | PASS — Helber matches Crossref |
 | C2       | PASS — catalog page noted   | FAIL — full text 403   | N/A — metadata-only              | PASS — downgraded, claim_supported=NONE | N/A — institutional author |
 ```
 
@@ -45,7 +45,7 @@ A FAIL on R1b is acceptable **only if** R3 is also PASS (citation is downgraded 
 
 - **PASS** — first author in citation matches first author in pasted API response, byte-for-byte.
 - **FAIL** — author name in citation differs from API response, or no API response was pasted.
-- **N/A** — institutional/corporate author with no individual names (e.g. "NATO Standardization Office").
+- **N/A** — institutional/corporate author with no individual names (e.g. "Food and Agriculture Organization of the United Nations").
 
 ## Negative Findings sanity check
 

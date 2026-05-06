@@ -5,8 +5,8 @@ When R1b (full-text retrieval) fails, the citation does not disappear — but it
 ## When R3 applies
 
 - Paywalled journal article — Crossref returns metadata, but the publisher gates the PDF behind a login.
-- NATO STANAGs, ISO/IEC/IMO standards, military doctrine — public catalog page exists, full document does not.
-- Proprietary taxonomies (Statcode, Lloyd's, IHS Markit) — vendor confirms the artifact exists but does not publish full content.
+- ISO/IEC standards, FAO/WHO guidelines, government technical reports — public catalog page exists, full document does not.
+- Proprietary taxonomies (commercial geospatial datasets, clinical coding systems) — vendor confirms the artifact exists but does not publish full content.
 - WebFetch returns a 403, a redirect-to-login, an interstitial, or an abstract-only page.
 - Preprint listed on arXiv but the link is dead.
 
@@ -24,15 +24,15 @@ The citation block is still emitted, with these constraints:
 
 Only as a **pointer**. Acceptable phrasings:
 
-> "A NATO standard exists in this area (STANAG 1241 [C7], metadata-only — content not verified)."
+> "An ISO standard exists in this area (ISO 19144-2 LCML [C7], metadata-only — content not verified)."
 
-> "Proprietary vessel-classification taxonomies are documented in industry sources [C8], not surveyed here."
+> "Proprietary land-cover taxonomies are documented in industry sources [C8], not surveyed here."
 
 Unacceptable phrasings:
 
-> ~~"STANAG 1241 defines five identity categories..."~~ — this is a content claim. Forbidden under R3.
+> ~~"ISO 19144-2 LCML defines five land-cover meta-classes..."~~ — this is a content claim. Forbidden under R3.
 
-> ~~"Industry taxonomies use 12 high-level vessel classes..."~~ — same problem.
+> ~~"Industry taxonomies use 12 high-level land-cover classes..."~~ — same problem.
 
 If you find yourself wanting to make a content claim, the citation is failing R3. Either retrieve the full text and re-promote it to a normal citation, or remove the claim from the prose and replace it with `[unsupported]`.
 
@@ -44,11 +44,10 @@ The `claim_supported = "NONE — content not verified"` field forces the writer 
 
 Treat as R3 by default unless full text was actually retrieved:
 
-- NATO STANAG (1241, 4154, ...)
-- ISO, IEC, IMO documents
+- ISO, IEC documents (e.g. ISO 19144-2 LCML)
+- FAO documents (e.g. LCCS — Land Cover Classification System)
+- WHO guidelines and clinical coding systems (e.g. SNOMED-CT under restricted licence)
 - ITU recommendations (sometimes free; check)
-- MIL-STD documents (sometimes free; check)
-- Lloyd's Register, IHS, Clarksons, S&P Global proprietary taxonomies
-- Statcode / Statcode 5
+- Commercial geospatial taxonomies and proprietary remote-sensing product specifications
 
-Some of these are actually free (ITU-R M.1371, MIL-STD-2525). Verify by fetching. If the fetch returns the actual specification text, R1b is satisfied and R3 does not apply.
+Some of these are actually free (e.g. several ITU-T recommendations, Copernicus product user manuals). Verify by fetching. If the fetch returns the actual specification text, R1b is satisfied and R3 does not apply.

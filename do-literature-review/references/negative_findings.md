@@ -8,7 +8,7 @@ Every literature review must include a **Negative Findings** section. The sectio
 
 For every sub-question from the restatement step, if it produced zero usable citations, list it explicitly:
 
-> **SQ3**: ML papers that explicitly reconcile labels across maritime taxonomies — no peer-reviewed source found. Closest hits discuss label noise generally but do not perform reconciliation; failed R2 quote requirement.
+> **SQ3**: ML papers that explicitly reconcile labels across satellite land-cover taxonomies — no peer-reviewed source found. Closest hits discuss label noise generally but do not perform reconciliation; failed R2 quote requirement.
 
 If a sub-question yielded only metadata-only (R3) citations, that also counts as "no usable citation" for content claims and should be listed.
 
@@ -18,9 +18,9 @@ A table with one row per query that did not yield a citation that survived verif
 
 | Source | Query string | Result | Reason rejected |
 |---|---|---|---|
-| arXiv | `AIS vessel classification label noise` | 11 hits | 2 already cited; rest off-topic |
-| Crossref | `Statcode 5 ship type mapping` | 0 hits | No coverage |
-| Semantic Scholar | `military vessel track classification fine-grained` | 4 hits | All paywalled; R3 only |
+| arXiv | `Sentinel-2 land cover classification label noise` | 11 hits | 2 already cited; rest off-topic |
+| Crossref | `FAO LCCS land cover mapping` | 0 hits | No coverage |
+| Semantic Scholar | `fine-grained urban land use classification` | 4 hits | All paywalled; R3 only |
 
 The "Query string" column must contain the actual string passed to the API. Paraphrases or summaries are not acceptable — the column exists so the user can re-run the query themselves.
 
@@ -28,8 +28,8 @@ The "Query string" column must contain the actual string passed to the API. Para
 
 If you decided not to search a topic that the user might expect, say so:
 
-> Excluded: non-maritime label-noise literature — out of scope per restatement.
-> Excluded: pre-2015 work on AIS clustering — superseded by post-2020 deep-learning papers.
+> Excluded: non-remote-sensing label-noise literature — out of scope per restatement.
+> Excluded: pre-2015 work on pixel-based unsupervised land-cover clustering — superseded by post-2020 deep-learning papers.
 
 ## Why this is structural
 

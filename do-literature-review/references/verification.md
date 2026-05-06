@@ -18,7 +18,7 @@ Trim the response to the relevant fields and **paste it verbatim into the citati
 - Crossref: `message.author`, `message.title`, `message.DOI`, `message.issued`, `message.URL`, `message.container-title`
 - arXiv: `<entry><title>`, all `<entry><author><name>`, `<entry><published>`, `<entry><id>`
 
-If neither Crossref nor arXiv has a record (e.g. a NATO standard, a corporate whitepaper), R1a fails → apply R3 metadata-only downgrade or drop.
+If neither Crossref nor arXiv has a record (e.g. an ISO standard, a corporate whitepaper), R1a fails → apply R3 metadata-only downgrade or drop.
 
 ### R1b. Full-text retrieval
 
@@ -47,7 +47,7 @@ The author list in every citation must be copied **byte-for-byte from the Crossr
 
 Do not write authors from prior knowledge, search-snippet text, another paper's reference list, or the PDF's title page. All three of those have produced wrong attributions in practice. The API response is the only authoritative source.
 
-This rule eliminates a specific failure mode: research subagents return wrong first authors that only metadata lookups catch (recent observed examples: PLOS ONE attributed to "Kraus" when Crossref says Kim; arXiv:2312.05270 attributed to "de Almeida" when arXiv says Gülsoylu; arXiv:2509.18109 attributed to "Karagiannidis" when arXiv says Nielsen).
+This rule eliminates a specific failure mode: research subagents return wrong first authors that only metadata lookups catch — observed pattern is a paper attributed to a co-author or a similarly-named researcher when the authoritative API response (Crossref `author[0].family` or arXiv first `<author><name>`) records a different first author entirely.
 
 ## Failure modes this section blocks
 

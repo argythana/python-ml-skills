@@ -50,8 +50,8 @@ API choices and response shapes are in [apis.md](references/apis.md). Citation, 
 
 ## Anti-patterns (have happened, do not repeat)
 
-- *"NATO STANAG 1241 defines vessel classes as ..."* without retrieving STANAG 1241 → R3 downgrade to metadata-only pointer.
-- *"Soldi et al. 2021 discusses label reconciliation ..."* when the paper has no such section → R2's verbatim-quote rule catches this.
+- *"Helber et al. defines land-cover classes as ..."* without retrieving Helber et al. → R3 downgrade to metadata-only pointer.
+- *"Helber et al. 2017 discusses label reconciliation ..."* when the paper has no such section → R2's verbatim-quote rule catches this.
 - *"Kraus et al., PLOS ONE 19(8):e0308934"* when Crossref says first author is Kim → R6 forces author attribution from the API response only.
 - A list of five hits with no Negative Findings → implies every search succeeded; almost never true. R4 makes this visible.
 
