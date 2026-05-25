@@ -1,10 +1,62 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
+require "open3"
 require "pathname"
 require "yaml"
 
 MAX_DESCRIPTION_LENGTH = 1024
+
+USAGE = <<~TEXT
+  Usage: scripts/validate-skills-frontmatter [--staged] [PATH...]
+
+  Validate SKILL.md frontmatter in the working tree or staged index.
+  With no paths, validates every repo skill in the selected source.
+TEXT
+
+def usage!
+  puts USAGE
+  exit 0
+end
+
+def staged_skill_paths(repo_root)
+  stdout, status = Open3.capture2(
+    "git",
+    "-C",
+    repo_root.to_s,
+    "diff",
+    "--cached",
+    "--name-only",
+    "--diff-filter=ACMR",
+    "-z",
+    "--"
+  )
+  abort "failed to read staged file list" unless status.success?
+
+  stdout.split("\0").select { |path| path.end_with?("/SKILL.md") }.sort
+end
+
+def read_skill_source(repo_root, path, staged:)
+  if staged
+    stdout, stderr, status = Open3.capture3(
+      "git",
+      "-C",
+      repo_root.to_s,
+      "show",
+      ":#{path}"
+    )
+    return [stdout, nil] if status.success?
+
+    message = stderr.strip
+    message = "git show failed for staged file" if message.empty?
+    return [nil, message]
+  end
+
+  absolute_path = repo_root / path
+  return [absolute_path.read, nil]
+rescue Errno::ENOENT => e
+  [nil, e.message]
+end
 
 def validate_frontmatter(path, raw)
   match = raw.match(/\A---\n(.*?)\n---(?:\n|\z)/m)
@@ -19,7 +71,9 @@ def validate_frontmatter(path, raw)
     return ["YAML parse error: #{e.message.lines.first&.strip || e.message}"]
   end
 
-  return ["frontmatter must be a YAML mapping"] unless frontmatter.is_a?(Hash)
+  unless frontmatter.is_a?(Hash)
+    return ["frontmatter must be a YAML mapping"]
+  end
 
   unless frontmatter.keys == ["name", "description"]
     errors << "frontmatter keys must be exactly ['name', 'description'] in that order"
@@ -37,8 +91,11 @@ def validate_frontmatter(path, raw)
     errors << "description must be a non-empty string"
   end
 
-  if description.is_a?(String) && description.strip.length >= MAX_DESCRIPTION_LENGTH
-    errors << "description must be less than #{MAX_DESCRIPTION_LENGTH} characters"
+  if description.is_a?(String)
+    description_length = description.strip.length
+    if description_length >= MAX_DESCRIPTION_LENGTH
+      errors << "description must be less than #{MAX_DESCRIPTION_LENGTH} characters (currently #{description_length})"
+    end
   end
 
   if name.is_a?(String) && name != directory
@@ -53,7 +110,25 @@ def validate_frontmatter(path, raw)
 end
 
 repo_root = Pathname(__dir__).dirname
-paths = ARGV.empty? ? Dir.chdir(repo_root) { Dir.glob("*/SKILL.md").sort } : ARGV.sort
+staged = false
+paths = []
+
+ARGV.each do |arg|
+  case arg
+  when "--staged"
+    staged = true
+  when "-h", "--help"
+    usage!
+  else
+    paths << arg
+  end
+end
+
+paths = if paths.empty?
+  staged ? staged_skill_paths(repo_root) : Dir.chdir(repo_root) { Dir.glob("*/SKILL.md").sort }
+else
+  paths.sort
+end
 
 if paths.empty?
   puts "No skill files to validate."
@@ -63,21 +138,27 @@ end
 failures = []
 
 paths.each do |path|
-  content = (repo_root / path).read
+  content, read_error = read_skill_source(repo_root, path, staged: staged)
+  if read_error
+    failures << [path, ["could not read file: #{read_error}"]]
+    next
+  end
+
   errors = validate_frontmatter(path, content)
   failures << [path, errors] unless errors.empty?
-rescue Errno::ENOENT => e
-  failures << [path, ["could not read file: #{e.message}"]]
 end
 
 if failures.empty?
-  puts "Validated #{paths.length} skill frontmatter file(s)."
+  source_label = staged ? "staged" : "working tree"
+  puts "Validated #{paths.length} skill frontmatter file(s) from #{source_label}."
   exit 0
 end
 
 failures.each do |path, errors|
   warn "#{path}:"
-  errors.each { |error| warn "  - #{error}" }
+  errors.each do |error|
+    warn "  - #{error}"
+  end
 end
 
 exit 1

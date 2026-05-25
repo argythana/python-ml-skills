@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# Symlink the committed git hooks into .git/hooks/.
+# Idempotent — re-run to refresh after pulling new hooks.
+
+set -e
+
+repo_root="$(git rev-parse --show-toplevel)"
+hooks_src="$repo_root/scripts/git-hooks"
+hooks_dst="$repo_root/.git/hooks"
+
+if [[ ! -d "$hooks_src" ]]; then
+    echo "no hooks to install: $hooks_src does not exist" >&2
+    exit 1
+fi
+
+for hook in "$hooks_src"/*; do
+    name="$(basename "$hook")"
+    target="$hooks_dst/$name"
+    ln -sf "$hook" "$target"
+    echo "installed: $target -> $hook"
+done

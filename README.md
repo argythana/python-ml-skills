@@ -62,9 +62,24 @@ python-ml-skills/
 ## Validation
 
 ```bash
-scripts/validate-skills-frontmatter
+scripts/validate-skills-frontmatter            # validate working tree
+scripts/validate-skills-frontmatter --staged   # validate staged index
 ```
 
 The validator enforces skillden-friendly frontmatter: exact `name` and
-`description` keys, folded descriptions, and `name` matching the skill
-directory.
+`description` keys, folded descriptions, `name` matching the skill
+directory, and `description` under 1024 characters (Codex's hard
+limit). Requires Ruby.
+
+### Pre-commit hook
+
+Install the committed git hook so every `git commit` validates staged
+SKILL.md files:
+
+```bash
+scripts/install-hooks
+```
+
+This symlinks `scripts/git-hooks/pre-commit` into `.git/hooks/`. CI
+also runs the validator on every push and PR
+(`.github/workflows/validate-skills.yml`).

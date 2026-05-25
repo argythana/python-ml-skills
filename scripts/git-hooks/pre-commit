@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# pre-commit hook: validate staged SKILL.md frontmatter.
+# Installed via scripts/install-hooks.
+
+set -e
+
+repo_root="$(git rev-parse --show-toplevel)"
+exec ruby "$repo_root/scripts/validate-skills-frontmatter" --staged
