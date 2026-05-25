@@ -3,21 +3,18 @@ name: obsidian-create-note
 description: >
   Use when the user wants to import a local Markdown file as a new note
   into a personal Obsidian vault — prompts like "import this .md into
-  Obsidian", "add this Markdown doc to my vault", "create a note from
-  this file", or "save this Markdown to my notes". The vault root is
-  discovered at runtime: `OBSIDIAN_VAULT` env var if set, otherwise the
-  single directory under `$HOME/Documents` (depth 3) containing
-  `.obsidian/`. If the source Markdown path is missing, ask for it
-  before proceeding — missing input is not a routing failure. Do NOT
-  use for: editing, renaming, moving, or deleting existing notes;
-  vault-wide search; daily notes (`daily/`); Literature notes
-  (`Literature/`); ephemeral scratch (`ephemeral/`); Excalidraw
-  drawings; fetching content from a URL (use `url-reader` first);
-  generating note content from scratch (this skill imports an existing
-  `.md` file, not authors one from a topic prompt). Do NOT run `git`
-  commands — the `obsidian-git` plugin owns commits. Assumes the vault
-  layout described in `references/vault-conventions.md`
-  (`all_notes/`, `tags/`, `Literature/`, etc.).
+  Obsidian", "add this Markdown doc to my vault", or "create a note
+  from this file". The vault root is discovered at runtime:
+  `OBSIDIAN_VAULT` env var if set, otherwise the single directory
+  under `$HOME/Documents` (depth 3) containing `.obsidian/`. If the
+  source Markdown path is missing, ask for it. Do NOT use for:
+  editing, renaming, moving, or deleting existing notes; vault-wide
+  search; daily notes (`daily/`); Literature notes (`Literature/`);
+  ephemeral scratch (`ephemeral/`); Excalidraw drawings; fetching from
+  a URL (use `url-reader` first); or authoring note content from
+  scratch. Do NOT run `git` — the `obsidian-git` plugin owns commits.
+  Assumes the layout in `references/vault-conventions.md`
+  (`all_notes/`, `tags/`, etc.).
 ---
 
 # Obsidian create note

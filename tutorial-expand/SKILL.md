@@ -1,26 +1,21 @@
 ---
 name: tutorial-expand
 description: >
-  Use this skill when expanding, annotating, rewriting, or drafting a
-  section — or a whole new notebook — of an official tutorial for a
-  Python data or ML library (e.g. scikit-learn, PyTorch, pandas,
-  matplotlib, NumPy, SciPy, Plotly) so it is friendlier for beginner
-  data scientists, researchers, and CS students. Trigger on prompts
-  like "expand this scikit-learn section", "explain this pandas
-  concept better", "make this PyTorch notebook beginner-friendly",
-  "what context should we add to this cell", or "why does this feature
-  exist". If the target notebook or cell is unclear, ask which one to
-  edit after routing. Do NOT use it for general Python tutorial
-  writing unrelated to data/ML libraries (web framework material like
-  Django or Flask, application code, language-only material), for
-  editing the upstream library itself, for non-tutorial docs in the
-  repo (`README.md`, `CLAUDE.md`), or for non-teaching changes to the
-  notebooks (file moves, dependency bumps, formatting, kernel
-  metadata). If a library-specific tutorial-expand skill is installed
-  for the target library (e.g. `mlflow-tutorial-expand` in a teach-
-  mlflow repo), prefer that skill — it encodes library idioms this
-  generic skill does not. For dependency work use `uv-deps`; for
-  staging edits use `git-staging`; for the commit message use
+  Use when expanding, annotating, rewriting, or drafting a section or
+  whole notebook of an official tutorial for a Python data/ML library
+  (e.g. scikit-learn, PyTorch, pandas, matplotlib, NumPy, SciPy,
+  Plotly) so it is friendlier for beginner data scientists and CS
+  students. Trigger on prompts like "expand this scikit-learn
+  section", "explain this pandas concept better", "make this PyTorch
+  notebook beginner-friendly", or "why does this feature exist". If
+  the target notebook or cell is unclear, ask after routing. Do NOT
+  use for general Python tutorial writing unrelated to data/ML
+  libraries (Django, Flask, application code), editing the upstream
+  library itself, non-tutorial docs (`README.md`, `CLAUDE.md`), or
+  non-teaching notebook changes (file moves, dependency bumps,
+  formatting, kernel metadata). If a library-specific tutorial-expand
+  skill is installed (e.g. `mlflow-tutorial-expand`), prefer that. For
+  deps use `uv-deps`; for staging use `git-staging`; for messages use
   `commit-message`.
 ---
 
