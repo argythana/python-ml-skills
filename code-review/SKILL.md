@@ -7,7 +7,8 @@ description: >
   code-documentation consistency. Trigger on requests like "review this Python
   PR", "audit this diff", "check code quality", or "give me a fix plan". Do
   NOT use it for non-Python code review, writing new features, dependency-only
-  changes, or pytest-suite-specific audits where `pytest-suite-review` is a
+  changes, pytest-suite-specific audits where `pytest-suite-review` is a
+  better fit, or iterative review-fix-rerun loops where `code-review-loop` is a
   better fit.
 ---
 
