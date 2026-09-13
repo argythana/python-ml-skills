@@ -128,10 +128,33 @@ def list_users():
     return User.query.all()
 ```
 
+## Injection Beyond SQL Values — Query/Filter DSLs
+
+`?`-parameterized SQL values are not the whole surface. Data-derived strings (a
+run name, a class label, a model version, any field carrying user/producer
+data) interpolated into a DSL that has no in-string escaping are an injection
+and silent-breakage risk: SQL *identifiers* (table/column names), MLflow /
+search `filter_string`, JSON-path expressions, LDAP filters, regexes, shell.
+
+```python
+# BAD: f-string into a filter DSL with no escaping. A stray quote breaks the
+# filter and the match silently returns nothing (stale row survives) — or the
+# wrong rows. Works today only because values HAPPEN to be quote-free.
+runs = client.search_runs(filter_string=f"attributes.run_name = '{run_name}'")
+
+# GOOD: whitelist/validate identifiers; pick the quote char + client-side fallback
+if not label.replace("_", "").isalnum():
+    raise ValueError(f"non-identifier label {label!r}")
+```
+
+Flag any f-string / `.format` / `%` whose result flows into `filter_string=`,
+raw SQL text, an identifier position, or a path/DSL expression.
+
 ## Security Checklist
 
 - [ ] No hardcoded secrets
-- [ ] All SQL queries parameterized
+- [ ] All SQL queries parameterized (values AND identifiers; plus non-SQL
+      query/filter DSLs — MLflow filters, JSON paths — validated/whitelisted)
 - [ ] User input validated/sanitized
 - [ ] File paths validated
 - [ ] No dangerous deserialization

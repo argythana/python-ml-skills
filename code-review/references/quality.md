@@ -64,9 +64,51 @@ except PermissionError as e:
     raise ConfigurationError(f"Cannot read {path}") from e
 ```
 
+## Degenerate-Input & Aggregate Correctness (High)
+
+A degenerate or absent value coerced to a real value is the costliest class of
+miss: it returns a *plausible-but-wrong* number with no exception. Check any
+aggregate, ranking, or metric path for: absent key / null / non-object / empty
+string / empty set / zero count / single distinct class silently becoming a
+`0.0`, an `""`, or a divisor.
+
+```python
+# BAD: a missing/uncastable score coerced to 0.0 gets ranked as a real value,
+# and a zero denominator divides — one bad row poisons the whole aggregate
+score = float(row.get("proba") or 0.0)
+accuracy = verdict_true / rows_evaluated  # rows_evaluated may be 0
+
+# GOOD: void the degenerate input (drop/NaN/raise), guard the divisor
+if not is_finite(score):        # excluded, never zero-ranked
+    continue
+if rows_evaluated <= 0:
+    raise ValueError("empty slice — corrupted statistics, not a quiet window")
+```
+
+- absent vs present-but-invalid must be distinguished (an absent key may be a
+  real 0; a present-but-uncastable value is a data fault that must void the row)
+- when logic is re-implemented (a port, a second backend, a vectorized/SQL
+  rewrite), it must re-satisfy the ORIGINAL path's degenerate-case invariants —
+  rewrites silently regress them
+
+## Scope & Invariant Correctness (High)
+
+- a slice/tenant/contract-scoped fact computed once at a union/global scope, or
+  keyed on too coarse an identity (`model` where the real key is
+  `(model, version)`), collapses distinct things — invisible until a second
+  instance exists
+- a branch gated on a config/flag PROXY (`window_days is None`) instead of the
+  real invariant it stands for (`end - start == 1 day`)
+- a fault-exclusion branch that emits no operational signal — the failure is
+  visible only as a log line or a chart gap; emit an always-present count
+  (legible at zero) so a spike is detectable
+
 ## Code Duplication (Moderate)
 
-Flag duplicate code blocks >10 lines.
+Flag duplicate code blocks >10 lines. Also flag logic re-implemented in
+parallel (two backends, a mirror helper) with NO single source of truth: they
+drift (e.g. one falls through on `""`, the other on `None`) and diverge
+silently. Prefer one shared definition both paths call.
 
 ```python
 # BAD: Duplicated logic
